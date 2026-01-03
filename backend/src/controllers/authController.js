@@ -71,6 +71,16 @@ exports.register = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Workspace not found' });
     }
 
+    // --- MANDATORY FIX: Subscription Limit Check ---
+    const currentUserCount = await User.count({ where: { tenantId: tenant.id } });
+    if (currentUserCount >= tenant.maxUsers) {
+        return res.status(403).json({ 
+            success: false, 
+            message: `User limit reached for this workspace (${tenant.maxUsers} max). Please contact admin.` 
+        });
+    }
+    // -----------------------------------------------
+
     const userExists = await User.findOne({ where: { email, tenantId: tenant.id } });
     if (userExists) {
       return res.status(400).json({ success: false, message: 'User already exists in this workspace' });

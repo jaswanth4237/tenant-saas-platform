@@ -19,11 +19,11 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await api.post('/auth/login', formData);
-      
+
       // Save token and user info
       localStorage.setItem('token', response.data.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.data));
-      
+
       toast.success('Login successful!');
       navigate('/dashboard');
     } catch (error) {
@@ -41,7 +41,7 @@ export default function Login() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          
+
           {/* Workspace Field - Critical for Multi-Tenancy */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -79,6 +79,18 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
             />
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="remember_me"
+              name="remember_me"
+              type="checkbox"
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
+              Remember me
+            </label>
           </div>
 
           <button

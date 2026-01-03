@@ -18,22 +18,22 @@ const seed = async () => {
     });
     console.log('✅ Tenant Created:', tenant.name);
 
-    // 2. Create Super Admin (Matches submission.json)
+    // 2. Create Super Admin (Role 1: Super Admin)
     const salt = await bcrypt.genSalt(10);
     const superAdminPass = await bcrypt.hash('Admin@123', salt);
-    
+
     await User.findOrCreate({
       where: { email: 'superadmin@system.com' },
       defaults: {
         fullName: 'System Super Admin',
         password: superAdminPass,
         role: 'super_admin',
-        tenantId: null 
+        tenantId: null
       }
     });
-    console.log('✅ Super Admin Created');
+    console.log('✅ Role 1/3 Created: Super Admin (superadmin@system.com)');
 
-    // 3. Create Tenant Admin (Matches submission.json)
+    // 3. Create Tenant Admin (Role 2: Tenant Admin)
     const adminPass = await bcrypt.hash('Demo@123', salt);
     const [tenantAdmin] = await User.findOrCreate({
       where: { email: 'admin@demo.com', tenantId: tenant.id },
@@ -43,11 +43,11 @@ const seed = async () => {
         role: 'tenant_admin'
       }
     });
-    console.log('✅ Tenant Admin Created');
+    console.log('✅ Role 2/3 Created: Tenant Admin (admin@demo.com)');
 
-    // 4. Create Regular Users (Matches submission.json)
+    // 4. Create Regular Users (Role 3: User)
     const userPass = await bcrypt.hash('User@123', salt);
-    
+
     await User.findOrCreate({
       where: { email: 'user1@demo.com', tenantId: tenant.id },
       defaults: { fullName: 'Demo User 1', password: userPass, role: 'user' }
@@ -57,7 +57,7 @@ const seed = async () => {
       where: { email: 'user2@demo.com', tenantId: tenant.id },
       defaults: { fullName: 'Demo User 2', password: userPass, role: 'user' }
     });
-    console.log('✅ Regular Users Created');
+    console.log('✅ Role 3/3 Created: Standard Users (user1@demo.com, user2@demo.com)');
 
     // 5. Create Sample Projects (Matches submission.json)
     // Project Alpha
@@ -72,33 +72,33 @@ const seed = async () => {
 
     // Project Beta (ADDED THIS to match submission.json)
     const [projectBeta] = await Project.findOrCreate({
-        where: { name: 'Project Beta', tenantId: tenant.id },
-        defaults: {
-          description: 'Second demo project',
-          status: 'active',
-          createdById: tenantAdmin.id
-        }
+      where: { name: 'Project Beta', tenantId: tenant.id },
+      defaults: {
+        description: 'Second demo project',
+        status: 'active',
+        createdById: tenantAdmin.id
+      }
     });
     console.log('✅ Projects Created (Alpha & Beta)');
 
     // 6. Create Sample Tasks for Project Alpha
     if (projectAlpha) {
-        await Task.findOrCreate({
-            where: { title: 'Design Homepage', projectId: projectAlpha.id },
-            defaults: { status: 'done', tenantId: tenant.id }
-        });
-        await Task.findOrCreate({
-            where: { title: 'Implement Auth', projectId: projectAlpha.id },
-            defaults: { status: 'in_progress', tenantId: tenant.id }
-        });
+      await Task.findOrCreate({
+        where: { title: 'Design Homepage', projectId: projectAlpha.id },
+        defaults: { status: 'done', tenantId: tenant.id }
+      });
+      await Task.findOrCreate({
+        where: { title: 'Implement Auth', projectId: projectAlpha.id },
+        defaults: { status: 'in_progress', tenantId: tenant.id }
+      });
     }
 
     // Create Sample Task for Project Beta (Optional but good for completeness)
     if (projectBeta) {
-        await Task.findOrCreate({
-            where: { title: 'Initial Planning', projectId: projectBeta.id },
-            defaults: { status: 'todo', tenantId: tenant.id }
-        });
+      await Task.findOrCreate({
+        where: { title: 'Initial Planning', projectId: projectBeta.id },
+        defaults: { status: 'todo', tenantId: tenant.id }
+      });
     }
 
     console.log('✅ Tasks Created');

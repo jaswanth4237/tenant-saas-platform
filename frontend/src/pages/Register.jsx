@@ -34,9 +34,9 @@ export default function Register() {
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
         <h2 className="text-2xl font-bold text-center">Join Workspace</h2>
         <p className="text-sm text-center text-gray-500">Create an account in an existing organization</p>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          
+
           {/* Workspace Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Workspace ID (Subdomain)</label>
@@ -104,6 +104,19 @@ export default function Register() {
               <option value="Manager">Manager</option>
               <option value="Admin">Tenant Admin</option>
             </select>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="terms"
+              name="terms"
+              type="checkbox"
+              required
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
+              I agree to the <a href="#" className="text-blue-600 hover:underline">Terms and Conditions</a>
+            </label>
           </div>
 
           <button

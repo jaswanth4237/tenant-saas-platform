@@ -2,9 +2,15 @@ const { Task, Project, AuditLog } = require('../models');
 
 exports.createTask = async (req, res) => {
   try {
-    const { title, status, projectId } = req.body;
+    const { title, status } = req.body;
+    const projectId = req.params.projectId || req.body.projectId;
+
+    if (!projectId) {
+      return res.status(400).json({ success: false, message: 'Project ID is required' });
+    }
+
     const project = await Project.findOne({ 
-        where: { id: projectId, tenantId: req.user.tenantId } 
+      where: { id: projectId, tenantId: req.user.tenantId } 
     });
     if (!project) return res.status(404).json({ success: false, message: 'Project not found' });
 
@@ -31,7 +37,7 @@ exports.createTask = async (req, res) => {
 
 exports.getTasks = async (req, res) => {
   try {
-    const { projectId } = req.query;
+    const projectId = req.params.projectId || req.query.projectId;
     const whereClause = { tenantId: req.user.tenantId };
     if (projectId) whereClause.projectId = projectId;
 
@@ -44,7 +50,7 @@ exports.getTasks = async (req, res) => {
 
 exports.updateTaskStatus = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.taskId || req.params.id;
     const { status } = req.body;
     const task = await Task.findOne({ where: { id, tenantId: req.user.tenantId } });
     

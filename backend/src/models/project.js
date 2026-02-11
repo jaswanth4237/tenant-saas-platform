@@ -20,15 +20,19 @@ const Project = sequelize.define('Project', {
   },
   tenantId: {
     type: DataTypes.UUID,
-    allowNull: false
+    allowNull: false,
+    field: 'tenant_id'
   },
   createdById: {
     type: DataTypes.UUID,
-    allowNull: false
+    allowNull: false,
+    field: 'created_by'
   }
 }, {
   timestamps: true,
-  tableName: 'projects' // <--- Forces lowercase table name
+  tableName: 'projects',
+  createdAt: 'created_at',
+  updatedAt: 'updated_at'
 });
 
 module.exports = Project;

@@ -8,6 +8,7 @@ router.use(protect);
 
 router.post('/', taskController.createTask);
 router.get('/', taskController.getTasks);
+router.patch('/:taskId/status', taskController.updateTaskStatus);
 router.patch('/:id', taskController.updateTaskStatus);
 router.put('/:id', taskController.updateTask);
 router.delete('/:id', taskController.deleteTask);

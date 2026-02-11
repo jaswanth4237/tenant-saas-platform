@@ -40,6 +40,21 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// Health Check Alias (for deployment checks)
+app.get('/health', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.status(200).json({ status: 'ok', database: 'connected' });
+  } catch (error) {
+    console.error('Health Check Failed:', error);
+    res.status(503).json({ 
+      status: 'error', 
+      database: 'disconnected', 
+      error: error.message 
+    });
+  }
+});
+
 // Register Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
